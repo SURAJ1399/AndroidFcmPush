@@ -1,0 +1,137 @@
+ class DemoTask extends AsyncTask<Void, Void, Void> {
+
+        protected Void doInBackground(Void... arg0) {
+            //Your implementation
+            try {
+                String jsonResponse;
+
+                URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con.setUseCaches(false);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setRequestProperty("Authorization", "key=AAAArPDPFdI:APA91bF42nGTilvN6DhdpizjpDg6U6QNpTjASOJYZcMqDx946fv-KUhJ_UOF4R2gGUCdwMm-qTvNrNEuWs1JmB54H0L6KdtQy12D_GGcOBXev--9FBoMPImT8aLtyqxSVj6pGF6z57t7");
+                con.setRequestMethod("POST");
+                String strJsonBody = "{\n\t\"to\":\"ffSN48paKOc:APA91bGDx2V4lswGmHYSrQRZren6Luv0vYnOjTFv7uJyZHlg3i0KdWSd3079obEI-LGgFrO1bQdOi05pzYqu9b3NW-x5DeVuY0WNvYwJ8_Z7KgUERGqHge_lHaCKnK0CgwhJIZR2B1Fq\"\n\t\"notification\":{\n\t\t\"title\":\"HELLO WORLD2\",\n\t\t\"body\":\"This is Test Message\",\n\t\t\"image\":\"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSzt_BUO0Qh3AW1Pb3NoYc_y6F3TDlR8bXdvi6nCrrthNmiqIyJ&usqp=CAU\"\n\t}\n\t\n}";
+
+              
+
+//to-fcmid
+
+               byte[] sendBytes = strJsonBody.getBytes("UTF-8");
+
+
+                con.setFixedLengthStreamingMode(sendBytes.length);
+
+                OutputStream outputStream = con.getOutputStream();
+                outputStream.write(sendBytes);
+
+                int httpResponse = con.getResponseCode();
+
+                if (  httpResponse >= HttpURLConnection.HTTP_OK
+                        && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+                    Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+                    jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                    scanner.close();
+                }
+                else {
+                    Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+                    jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                    scanner.close();
+                }
+                System.out.println("jsonResponse:\n" + jsonResponse);
+                Log.e("jsonMessage",jsonResponse);
+
+
+            } catch(Throwable t) {
+                t.printStackTrace();
+            }
+return  null;
+        }
+
+        protected void onPostExecute(Void result) {
+            // TODO: do something with the feed
+        }
+    }
+
+
+ //FirebaseMessagingService
+
+
+package com.intern.mmetournament;
+
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
+
+import com.google.firebase.messaging.RemoteMessage;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import retrofit2.http.Url;
+
+public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
+
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+        shownotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody(),remoteMessage.getNotification().getImageUrl().toString());
+
+
+    }
+    public void shownotification(String title,String message,String imageurl)
+    {
+        Log.e("imageurl",imageurl);
+        Bitmap bitmap=getBitmap(imageurl);
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"notification")
+                .setSmallIcon(R.drawable.logoa)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat xx=NotificationManagerCompat.from(this);
+        xx.notify(1,builder.build());
+
+    }
+    public  Bitmap getBitmap(String imageurl) {
+        try {
+            URL url = new URL(imageurl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream inputStream = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
+}
+
+
+///Manifest File
+    <service android:name=".FirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
+
+
+
+
