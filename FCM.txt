@@ -135,3 +135,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 
 
+
+//    private void getDirection() {
+//        Uri gmmIntentUri = Uri.parse("google.navigation:q=22.8098833,86.20755799999999");  //for google map intent in navigation mode
+//        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+//        mapIntent.setPackage("com.google.android.apps.maps");
+//        startActivity(mapIntent);
+//    }
