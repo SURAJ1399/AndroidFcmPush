@@ -14,7 +14,7 @@
                 con.setRequestProperty("Content-Type", "application/json");
                 con.setRequestProperty("Authorization", "key=firebase server key here  (AA type)");
                 con.setRequestMethod("POST");
-                String strJsonBody = "{\n\t\"to\":\"firebasedeviceidhere\"\n\t\"notification\":{\n\t\t\"title\":\"HELLO WORLD2\",\n\t\t\"body\":\"This is Test Message\",\n\t\t\"image\":\"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSzt_BUO0Qh3AW1Pb3NoYc_y6F3TDlR8bXdvi6nCrrthNmiqIyJ&usqp=CAU\"\n\t}\n\t\n}";
+                String strJsonBody = "{\n\t\"to\":\"firebasedevicetoken here\"\n\t\"notification\":{\n\t\t\"title\":\"HELLO WORLD2\",\n\t\t\"body\":\"This is Test Message\",\n\t\t\"image\":\"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSzt_BUO0Qh3AW1Pb3NoYc_y6F3TDlR8bXdvi6nCrrthNmiqIyJ&usqp=CAU\"\n\t}\n\t\n}";
 
               
 
